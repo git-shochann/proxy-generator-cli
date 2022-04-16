@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"nhn-toast-api/api"
+	"nhn-toast-api/util"
 	"os"
 )
 
@@ -20,6 +21,6 @@ func main() {
 
 	fmt.Println(instance)
 
-	// str := util.RandomGenerate(5)
-	// fmt.Println(str)
+	str := util.RandomGenerate(5)
+	fmt.Println(str)
 }
