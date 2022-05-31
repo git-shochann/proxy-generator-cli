@@ -1,4 +1,4 @@
-package api
+package internal
 
 import (
 	"bytes"
@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"nhn-toast-api/util"
+	"nhn-toast-api/pkg"
 )
 
 var (
@@ -37,7 +37,7 @@ var data instance
 
 func init() {
 
-	str := util.RandomGenerate(10)
+	str := pkg.RandomGenerate(10)
 
 	data = instance{
 		Server: detail{

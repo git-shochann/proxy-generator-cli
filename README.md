@@ -1,8 +1,8 @@
-### 概要
+# Proxy Generator
 
-NHN Cloud
+NHN Cloud を用いて自動でインスタンスを作成し、グローバル IP をアタッチします。
+その後自動で Proxy サーバーを生成し、最終的にブラウザでも使用出来るように IP:Port:User:Pass にして使えるようにします。
 
-https://docs.toast.com/ja/TOAST/ja/Overview/
+## 作成理由
 
-自動でインスタンスを作成しグローバル IP をアタッチ後,
-Proxy サーバーを生成し、最終的に IP:Port:User:Pass を返して使えるようにします。
+友人からの要望で作成を行なった。

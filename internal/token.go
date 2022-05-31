@@ -1,9 +1,8 @@
-package api
+package internal
 
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -12,94 +11,13 @@ import (
 	"gopkg.in/ini.v1"
 )
 
-var TokenEndpoint = "https://api-identity.infrastructure.cloud.toast.com/v2.0/tokens"
+var tokenEndPoint = "https://api-identity.infrastructure.cloud.toast.com/v2.0/tokens"
 
-// グローバル変数として全スコープの範囲にて型を宣言 この変数Bodyをmain関数で使用するため。
-var Body RequestBody
+// グローバル変数として全スコープの範囲にて型を宣言 この変数RequestBodyをmain関数で使用するため。
+var RequestBody RequestBodyList
 
-// 初めにconfigを読み込む
-func LoadConfig() err {
-
-	cfg, err := ini.Load("config.ini")
-	if err != nil {
-		return nil, getErrorResponse(err)
-	}
-
-	// 宣言した空の変数Bodyを初期化する
-	Body = RequestBody{
-		Auth: Data{
-			Tenantid: cfg.Section("toast").Key("tenantid").String(),
-			Passwordcredentials: Passwordcredentials{
-				Username: cfg.Section("toast").Key("username").String(),
-				Password: cfg.Section("toast").Key("password").String(),
-			},
-		},
-	}
-
-	return nil
-}
-
-// 戻り値で*Token型のstructとerrorを返す。
-
-func GetToken() (*Token, error) {
-
-	err := LoadConfig()
-	if err != nil {
-		return nil, getErrorResponse(err)
-	}
-
-	// fmt.Println(Body.Auth.Passwordcredentials.Username)
-	encodedjson, err := json.Marshal(Body)
-	if err != nil {
-		return nil, getErrorResponse(err)
-	}
-
-	// リクエストの作成
-	req, err := http.NewRequest("POST", TokenEndpoint, bytes.NewBuffer(encodedjson))
-	if err != nil {
-		return nil, getErrorResponse(err)
-	}
-
-	req.Header.Set("Content-Type", "application/json")
-
-	client := http.Client{}
-	res, err := client.Do(req)
-
-	if err != nil {
-		return nil, getErrorResponse(err)
-	}
-
-	defer res.Body.Close()
-
-	data, err := ioutil.ReadAll(res.Body)
-
-	if err != nil {
-		return nil, getErrorResponse(err)
-	}
-
-	// レスポンスのstructの初期化
-	var token *Token
-
-	// 関数にアドレスを渡して直接操作できるようにする(実際にデータを参照して、変更を加える)
-	err = json.Unmarshal(data, &token)
-
-	if err != nil {
-		return nil, getErrorResponse(err)
-	}
-
-	// 上記で token *tokenのポインタ型と宣言しているのでここの返り値の設定は、tokenのみでOK
-	fmt.Printf("%T, %v", token, token)
-	return token, nil
-
-}
-
-func getErrorResponse(message string) error {
-	return errors.New(message)
-}
-
-/* リクエストボディで必要なstruct */
-
-type RequestBody struct {
+// リクエストで必要なstruct
+type RequestBodyList struct {
 	Auth Data `json:"auth"`
 }
 
@@ -113,9 +31,80 @@ type Passwordcredentials struct {
 	Password string `json:"password"`
 }
 
-/* レスポンスで必要なstruct */
-// TODO: structの見直しを行う
+func LoadConfig() error {
 
+	cfg, err := ini.Load("../configs/config.ini")
+	if err != nil {
+		return err
+	}
+
+	// RequestBodyList構造体を初期化する
+	RequestBody = RequestBodyList{
+		Auth: Data{
+			Tenantid: cfg.Section("toast").Key("tenantid").String(),
+			Passwordcredentials: Passwordcredentials{
+				Username: cfg.Section("toast").Key("username").String(),
+				Password: cfg.Section("toast").Key("password").String(),
+			},
+		},
+	}
+
+	return nil
+}
+
+// ポインタ型のToken構造体とerrorインターフェースを返すということは独自でerrorインターフェースを実装しているstructの定義が必要ですか？
+func GetToken() (*Token, error) {
+
+	err := LoadConfig()
+	if err != nil {
+		return nil, err
+	}
+
+	encodedjson, err := json.Marshal(RequestBody)
+	if err != nil {
+		return nil, err
+	}
+
+	// リクエストの作成
+	req, err := http.NewRequest("POST", tokenEndPoint, bytes.NewBuffer(encodedjson))
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	client := http.Client{}
+	res, err := client.Do(req)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer res.Body.Close()
+
+	data, err := ioutil.ReadAll(res.Body)
+
+	if err != nil {
+		return nil, err
+	}
+
+	// レスポンスのstructの初期化
+	var token *Token
+
+	// 関数にアドレスを渡して直接操作できるようにする(実際にデータを参照して、変更を加える)
+	err = json.Unmarshal(data, &token)
+
+	if err != nil {
+		return nil, err
+	}
+
+	// 上記で token *tokenのポインタ型と宣言しているのでここの返り値の設定は、tokenのみでOK
+	fmt.Printf("%T, %v", token, token)
+	return token, nil
+
+}
+
+/* レスポンスで必要なstruct */
 type Token struct {
 	Access struct {
 		Token struct {
