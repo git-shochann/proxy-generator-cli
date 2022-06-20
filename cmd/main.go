@@ -2,32 +2,28 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"nhn-toast-api/internal"
+	"os"
 )
 
 func main() {
 
-	token, err := internal.GetToken()
-
-	fmt.Println(token)
-
+	// トークンの取得
+	fmt.Println("Getting Token")
+	t, err := internal.GetToken()
 	if err != nil {
-		fmt.Println(err)
+		log.Fatalln(err)
 	}
+	fmt.Println("done!")
 
-	// fmt.Println(token.Access.Token.ID) // データが格納されている構造体にアクセス
-
-	// instance, err := api.CreateInstance(token.Access.Token.ID, token.Access.Token.Tenant.ID)
-	// fmt.Println(instance) // ここに500のメッセージが入ってる
-	// fmt.Println(err)      // nil？x
-
-	// if err != nil {
-	// 	fmt.Printf("fail to generate server: %v", err)
-	// 	os.Exit(1)
-	// }
-
-	// fmt.Println(instance)
-
-	// str := util.RandomGenerate(5)
-	// fmt.Println(str)
+	// イメージリストの取得
+	if _, err := os.Stat("../image-list.txt"); err != nil {
+		fmt.Println("Getting Image List")
+		_, err = internal.GetImageList(t.Access.Token.ID)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		fmt.Println("done!")
+	}
 }

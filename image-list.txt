@@ -1,0 +1,30 @@
+No.0 Name:Rocky Linux 8.5 (2022.05.17) ID: c5d07590-c94f-4bc2-ab44-0cb678915e9b
+No.1 Name:CentOS 7.8 with PostgreSQL 10.20 (2022.05.17) ID: be3a2dec-cfe7-400f-a637-62c4b4fe3da0
+No.2 Name:CentOS 7.8 with PostgreSQL 14.2 (2022.05.17) ID: 8505d42c-0328-45fc-a311-ce9e2823b7c0
+No.3 Name:CentOS 7.8 with PostgreSQL 12.10 (2022.05.17) ID: 80d552ac-04a0-45a1-80eb-d2b72dda2922
+No.4 Name:CentOS 7.8 with PostgreSQL 13.6 (2022.05.17) ID: 6c4188fb-175a-4bf2-9e2d-d5f091428585
+No.5 Name:CentOS 7.8 with PostgreSQL 11.15 (2022.05.17) ID: 491fcc6a-8132-456d-80df-f597634cceb8
+No.6 Name:Debian 11.2 Bullseye (2022.03.22) ID: 5dbc4bf0-2713-424a-81d4-339dbe86b8b6
+No.7 Name:CentOS 7.8 with JEUS8Fix1(Managed Server 2022.03.22) ID: 4ccf0712-ebe2-4d7c-9e7b-51c9039b4762
+No.8 Name:CentOS 7.8 with JEUS8Fix1(Domain Administrator Server 2022.03.22) ID: 47433c1a-4d63-41af-aeba-ec90f15b8334
+No.9 Name:CentOS 7.8 with WebtoB5Fix4 (2022.03.22) ID: 444a707b-d1d2-4171-9167-37940b701ebe
+No.10 Name:CentOS 7.8 with Tibero 6 (2022.01.25) ID: 4b52c69f-3ea5-4c91-875c-401d528ef73b
+No.11 Name:Windows 2019 STD (2021.12.21) JP ID: 423085dd-4ad3-477b-adf0-93cedf33ee3c
+No.12 Name:CentOS 7.8 with MariaDB 10.3.31 (2021.12.21) ID: ceb95ae4-182e-4fbb-b9ba-39d51cc34cc6
+No.13 Name:Windows 2016 STD with MS-SQL 2019 Standard (2021.12.21) JP ID: 56246a63-e2db-4079-be42-03fdac26d8de
+No.14 Name:CentOS 7.8 with MySQL 5.6.38 (2021.12.21) ID: a39b68f4-5005-41e7-8de6-7808d617b2a8
+No.15 Name:Windows 2019 STD (2021.12.21) KO ID: b5ac220c-573c-4ac6-9dfa-5e97d70201df
+No.16 Name:Windows 2012 R2 STD with MS-SQL 2016 Standard (2021.12.21) EN ID: b5cc40cd-1f35-465a-8dca-82884f56cfbe
+No.17 Name:Windows 2016 STD with MS-SQL 2019 Express (2021.12.21) JP ID: 7773d267-c807-43c4-889d-fcd368b28c75
+No.18 Name:Windows 2012 R2 STD (2021.12.21) KO ID: 6178a011-20b9-434c-ab5a-97397ac1dfe1
+No.19 Name:Windows 2016 STD with MS-SQL 2017 Standard (2021.12.21) JP ID: 6ca45b1c-6967-4833-bb1a-03fdf6da6060
+No.20 Name:Windows 2016 STD with MS-SQL 2019 Standard (2021.12.21) KO ID: 43d4a28d-61d6-4672-88bd-3e7ffd52e8a0
+No.21 Name:Ubuntu Server 18.04.6 LTS (2021.12.21) ID: ca69fad9-92f3-4c9b-a6e4-7e8b0e4d3a58
+No.22 Name:Windows 2016 STD with MS-SQL 2017 Standard (2021.12.21) EN ID: 3407f767-8e64-4b64-a56a-de8743f95feb
+No.23 Name:CentOS 7.8 with MySQL 8.0.22 (2021.12.21) ID: 9cc274a5-1fa3-48ef-8ab9-e19bff1909c4
+No.24 Name:Windows 2019 STD with MS-SQL 2019 Standard (2021.12.21) JP ID: 331882ab-610d-4ecc-883b-6f9bce113c62
+No.25 Name:CentOS 7.8 with MySQL 5.7.20 (2021.12.21) ID: 5c68c21b-eacc-4865-b62b-b10ca7c47087
+No.26 Name:Windows 2016 STD with MS-SQL 2016 Standard (2021.12.21) EN ID: 5cd47c3e-8d9c-48d5-9b9d-83a2a5f41091
+No.27 Name:Windows 2012 R2 STD with MS-SQL 2016 Standard (2021.12.21) KO ID: 82bac001-ad56-445e-931c-1449ec652027
+No.28 Name:CentOS 7.8 (2021.12.21) ID: ae0b0150-fd2e-411e-8c41-4f22b371ef81
+No.29 Name:Windows 2019 STD with MS-SQL 2019 Standard (2021.12.21) KO ID: bdd235f2-8ed4-4132-ab48-4bbca733bda9

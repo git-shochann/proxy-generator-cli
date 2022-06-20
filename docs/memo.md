@@ -19,3 +19,5 @@ token.go -> API 呼び出し時に必要なトークンを発行。
 instance.go -> 1 個のインスタンスを作成する。
 floating_ip.go -> グローバル IP をアタッチする。
 proxy.sh -> サーバーに ssh 接続を行い、Proxy サーバーを構築する。
+
+---
