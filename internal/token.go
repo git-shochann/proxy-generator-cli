@@ -5,15 +5,11 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	config "nhn-toast-api/configs"
 	"time"
-
-	"gopkg.in/ini.v1"
 )
 
 var tokenEndPoint = "https://api-identity.infrastructure.cloud.toast.com/v2.0/tokens"
-
-// グローバル変数として全スコープの範囲にて型を宣言 この変数RequestBodyをmain関数で使用するため。
-var RequestBody Request
 
 // リクエストで必要なstruct
 type Request struct {
@@ -30,36 +26,21 @@ type Passwordcredentials struct {
 	Password string `json:"password"`
 }
 
-func LoadConfig() error {
+// ポインタ型のToken構造体とerrorインターフェースを返すということは独自でerrorインターフェースを実装しているstructの定義が必要ですか？
+func GetToken() (*Response, error) {
 
-	cfg, err := ini.Load("../configs/config.ini")
-	if err != nil {
-		return err
-	}
-
-	// RequestBodyList構造体を初期化する
-	RequestBody = Request{
+	// 構造体の初期化
+	requestBody := Request{
 		Auth: Data{
-			Tenantid: cfg.Section("toast").Key("tenantid").String(),
+			Tenantid: config.Config.TenantID,
 			Passwordcredentials: Passwordcredentials{
-				Username: cfg.Section("toast").Key("username").String(),
-				Password: cfg.Section("toast").Key("password").String(),
+				Username: config.Config.UserName,
+				Password: config.Config.PassWord,
 			},
 		},
 	}
 
-	return nil
-}
-
-// ポインタ型のToken構造体とerrorインターフェースを返すということは独自でerrorインターフェースを実装しているstructの定義が必要ですか？
-func GetToken() (*Response, error) {
-
-	err := LoadConfig()
-	if err != nil {
-		return nil, err
-	}
-
-	encodedjson, err := json.Marshal(RequestBody)
+	encodedjson, err := json.Marshal(requestBody)
 	if err != nil {
 		return nil, err
 	}
