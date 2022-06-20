@@ -11,7 +11,7 @@ import (
 func main() {
 
 	// トークンの取得
-	fmt.Println("Getting Token")
+	fmt.Println("Getting Token...")
 	t, err := internal.GetToken()
 	if err != nil {
 		log.Fatalln(err)
@@ -22,7 +22,7 @@ func main() {
 
 	// イメージリストの取得
 	if _, err := os.Stat("../image-list.txt"); err != nil {
-		fmt.Println("Getting Image List")
+		fmt.Println("Getting Image List...")
 		_, err = internal.GetImageList(token)
 		if err != nil {
 			log.Fatalln(err)
@@ -31,7 +31,7 @@ func main() {
 	}
 
 	// インスタンスの作成
-	fmt.Println("Generating Instance")
+	fmt.Println("Generating Instance...")
 	_, err = internal.Createinstance(token, config.Config.TenantID)
 	if err != nil {
 		log.Fatalln(err)
