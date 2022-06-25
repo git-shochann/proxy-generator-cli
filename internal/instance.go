@@ -11,10 +11,10 @@ import (
 )
 
 const (
-	imageid  = "ae0b0150-fd2e-411e-8c41-4f22b371ef81" // centos
-	u2       = "b41750b4-d819-487d-84bc-89fc7a6d0df1"
-	t2       = "2718e9c1-b887-460b-bf4e-abcc2b010ec6" // t2を使用する場合リクエストの内容が変わる
-	subnetid = "b9196e60-934c-40ea-af80-f5c7e991d3fd"
+	imageid         = "ae0b0150-fd2e-411e-8c41-4f22b371ef81" // centos
+	u2              = "b41750b4-d819-487d-84bc-89fc7a6d0df1"
+	t2              = "2718e9c1-b887-460b-bf4e-abcc2b010ec6" // t2を使用する場合リクエストの内容が変わる
+	subnetid string = "b9196e60-934c-40ea-af80-f5c7e991d3fd"
 )
 
 func Createinstance(token string, tenantid string) (*ResponseInstanse, error) {
@@ -25,14 +25,31 @@ func Createinstance(token string, tenantid string) (*ResponseInstanse, error) {
 	// リクエストをするための構造体の初期化
 	requestBody := RequestInstanse{
 		Server: Server{
+			Name:      randomName,
 			ImageRef:  imageid,
 			FlavorRef: u2,
-			Network: Network{
+			Network: []Networks{{
 				Subnet: subnetid,
-			},
-			Name:    randomName,
+			}},
 			Keyname: config.Config.KeyName,
 		},
+	}
+
+	// Request
+	type RequestInstanse struct {
+		Server `json:"server"`
+	}
+
+	type Server struct {
+		Name      string     `json:"name"`
+		ImageRef  string     `json:"imageRef"`
+		FlavorRef string     `json:"flavorRef"`
+		Network   []Networks `json:"networks"`
+		Keyname   string     `json:"key_name"`
+	}
+
+	type Networks struct {
+		Subnet string `json:"subnet"`
 	}
 
 	endpoint := "https://jp1-api-instance.infrastructure.cloud.toast.com" + "/v2/" + tenantid + "/servers"
@@ -86,14 +103,14 @@ type RequestInstanse struct {
 }
 
 type Server struct {
-	Name      string  `json:"name"`
-	ImageRef  string  `json:"imageRef"`
-	FlavorRef string  `json:"flavorRef"`
-	Network   Network `json:"networks"`
-	Keyname   string  `json:"key_name"`
+	Name      string     `json:"name"`
+	ImageRef  string     `json:"imageRef"`
+	FlavorRef string     `json:"flavorRef"`
+	Network   []Networks `json:"networks"`
+	Keyname   string     `json:"key_name"`
 }
 
-type Network struct {
+type Networks struct {
 	Subnet string `json:"subnet"`
 }
 
