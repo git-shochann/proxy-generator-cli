@@ -19,13 +19,13 @@ const (
 	baseURL    string = "https://jp1-api-instance.infrastructure.cloud.toast.com"
 )
 
-func Createinstance(token string, tenantid string) (*ResponseInstanse, error) {
+func Createinstance(token string, tenantid string) (*ResponseInstance, error) {
 
 	// サーバーネームをランダムで出力する
 	randomName := pkg.RandomGenerate(10)
 
 	// リクエストをするための構造体の初期化
-	requestBody := RequestInstanse{
+	requestBody := RequestInstance{
 		Server: Server{
 			Name:      randomName,
 			ImageRef:  imageID,
@@ -76,7 +76,7 @@ func Createinstance(token string, tenantid string) (*ResponseInstanse, error) {
 		log.Fatalln(err)
 	}
 
-	var response ResponseInstanse
+	var response ResponseInstance
 
 	err = json.Unmarshal(data, &response)
 	if err != nil {
@@ -87,7 +87,7 @@ func Createinstance(token string, tenantid string) (*ResponseInstanse, error) {
 }
 
 // Request
-type RequestInstanse struct {
+type RequestInstance struct {
 	Server `json:"server"`
 }
 
@@ -104,7 +104,7 @@ type NetWorks struct {
 }
 
 // Response
-type ResponseInstanse struct {
+type ResponseInstance struct {
 	Server struct {
 		SecurityGroups []struct {
 			Name string `json:"name"`
