@@ -3,6 +3,7 @@ package internal
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -13,7 +14,7 @@ import (
 const (
 	imageID    string = "ae0b0150-fd2e-411e-8c41-4f22b371ef81" // centos
 	u2Instance string = "b41750b4-d819-487d-84bc-89fc7a6d0df1"
-	t2instance string = "2718e9c1-b887-460b-bf4e-abcc2b010ec6" // t2を使用する場合リクエストの内容が変わる
+	t2Instance string = "2718e9c1-b887-460b-bf4e-abcc2b010ec6" // t2を使用する場合リクエストの内容が変わる
 	subnetID   string = "b9196e60-934c-40ea-af80-f5c7e991d3fd"
 	baseURL    string = "https://jp1-api-instance.infrastructure.cloud.toast.com"
 )
@@ -23,17 +24,16 @@ func Createinstance(token string, tenantid string) (*ResponseInstanse, error) {
 	// サーバーネームをランダムで出力する
 	randomName := pkg.RandomGenerate(10)
 
-	// リクエストをするための構造体の初期化 + インスタンス化
-
+	// リクエストをするための構造体の初期化
 	requestBody := RequestInstanse{
 		Server: Server{
 			Name:      randomName,
 			ImageRef:  imageID,
 			FlavorRef: u2Instance,
-			NetWork: []NetWork{
+			KeyName:   config.Config.KeyName,
+			NetWork: []NetWorks{
 				{Subnet: subnetID},
 			},
-			KeyName: config.Config.KeyName,
 		},
 	}
 
@@ -49,10 +49,14 @@ func Createinstance(token string, tenantid string) (*ResponseInstanse, error) {
 		log.Fatalln(err)
 	}
 
+	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Auth-Token", token)
+
+	fmt.Println(req.Header)
 
 	client := http.Client{}
 	res, err := client.Do(req)
+	fmt.Println(res)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -88,14 +92,14 @@ type RequestInstanse struct {
 }
 
 type Server struct {
-	Name      string    `json:"name"`
-	ImageRef  string    `json:"imageRef"`
-	FlavorRef string    `json:"flavorRef"`
-	NetWork   []NetWork `json:"networks"`
-	KeyName   string    `json:"key_name"`
+	Name      string     `json:"name"`
+	ImageRef  string     `json:"imageRef"`
+	FlavorRef string     `json:"flavorRef"`
+	KeyName   string     `json:"key_name"`
+	NetWork   []NetWorks `json:"networks"`
 }
 
-type NetWork struct {
+type NetWorks struct {
 	Subnet string `json:"subnet"`
 }
 
