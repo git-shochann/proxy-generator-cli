@@ -12,11 +12,11 @@ import (
 )
 
 const (
-	imageID    string = "ae0b0150-fd2e-411e-8c41-4f22b371ef81" // centos
-	u2Instance string = "b41750b4-d819-487d-84bc-89fc7a6d0df1"
-	t2Instance string = "2718e9c1-b887-460b-bf4e-abcc2b010ec6" // t2を使用する場合リクエストの内容が変わる
-	subnetID   string = "b9196e60-934c-40ea-af80-f5c7e991d3fd"
-	baseURL    string = "https://jp1-api-instance.infrastructure.cloud.toast.com"
+	imageID         string = "ae0b0150-fd2e-411e-8c41-4f22b371ef81" // centos
+	u2Instance      string = "b41750b4-d819-487d-84bc-89fc7a6d0df1"
+	t2Instance      string = "2718e9c1-b887-460b-bf4e-abcc2b010ec6" // t2を使用する場合リクエストの内容が変わる
+	subnetID        string = "b9196e60-934c-40ea-af80-f5c7e991d3fd"
+	instanceBaseURL string = "https://jp1-api-instance.infrastructure.cloud.toast.com"
 )
 
 func Createinstance(token string, tenantid string) (*ResponseInstance, error) {
@@ -37,7 +37,7 @@ func Createinstance(token string, tenantid string) (*ResponseInstance, error) {
 		},
 	}
 
-	endpoint := baseURL + "/v2/" + tenantid + "/servers"
+	endpoint := instanceBaseURL + "/v2/" + tenantid + "/servers"
 
 	encodedjson, err := json.Marshal(requestBody)
 	if err != nil {
@@ -61,6 +61,8 @@ func Createinstance(token string, tenantid string) (*ResponseInstance, error) {
 		log.Fatalln(err)
 	}
 
+	defer res.Body.Close()
+
 	if res.StatusCode != 202 {
 		data, err := ioutil.ReadAll(res.Body)
 		if err != nil {
@@ -68,8 +70,6 @@ func Createinstance(token string, tenantid string) (*ResponseInstance, error) {
 		}
 		log.Fatalln(string(data))
 	}
-
-	defer res.Body.Close()
 
 	data, err := ioutil.ReadAll(res.Body)
 	if err != nil {

@@ -38,4 +38,12 @@ func main() {
 	}
 	fmt.Println("done!")
 
+	// floatingIP作成
+	fmt.Println("Generating GlobalIP...")
+	_, err = internal.CreateIP(token, config.Config.TenantID)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println("done!")
+
 }
