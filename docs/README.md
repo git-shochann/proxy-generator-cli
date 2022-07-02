@@ -7,7 +7,7 @@ CLI にて NHN Cloud を用いて自動でインスタンスを作成し、グ�
 
 .
 ├── cmd
-│   └── main.go
+│   └── main.go // エントリーポイント
 ├── configs
 │   ├── config.go
 │   └── config.ini
@@ -25,4 +25,4 @@ CLI にて NHN Cloud を用いて自動でインスタンスを作成し、グ�
 │   └── token.go // API 使用準備, token 生成
 ├── makefile // 便利コマンド群
 └── pkg
-└── random.go
+└── random.go // ランダムの名前を生成
