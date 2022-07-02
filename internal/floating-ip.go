@@ -22,12 +22,12 @@ func CreateIP(token, tenantid string) (*response, error) {
 
 	encodedjson, err := json.Marshal(request)
 	if err != nil {
-		log.Println(err)
+		log.Fatalln(err)
 	}
 
 	req, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(encodedjson))
 	if err != nil {
-		log.Println(err)
+		log.Fatalln(err)
 	}
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Auth-Token", token)
@@ -35,7 +35,7 @@ func CreateIP(token, tenantid string) (*response, error) {
 	client := http.Client{}
 	res, err := client.Do(req)
 	if err != nil {
-		log.Println(err)
+		log.Fatalln(err)
 	}
 
 	defer res.Body.Close()
@@ -43,21 +43,21 @@ func CreateIP(token, tenantid string) (*response, error) {
 	if res.StatusCode != 202 {
 		data, err := ioutil.ReadAll(res.Body)
 		if err != nil {
-			log.Println(err)
+			log.Fatalln(err)
 		}
-		log.Println(data)
+		log.Println(string(data))
 	}
 
 	data, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		log.Println(err)
+		log.Fatalln(err)
 	}
 
 	var response response
 
 	err = json.Unmarshal(data, &response)
 	if err != nil {
-		log.Println(err)
+		log.Fatalln(err)
 	}
 
 	return &response, err

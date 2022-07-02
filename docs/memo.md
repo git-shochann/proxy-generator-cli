@@ -19,3 +19,7 @@ IP:22:centos にて ssh キーを用いて接続 -> ドキュメント確認
 - tenant id
 - ユーザー名
 - パスワード
+
+WebApplication にする
+
+ログイン有りで Web サーバーを立てて API にする。

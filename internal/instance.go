@@ -52,7 +52,7 @@ func Createinstance(token string, tenantid string) (*ResponseInstance, error) {
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Auth-Token", token)
 
-	fmt.Println(req.Header)
+	// fmt.Println(req.Header)
 
 	client := http.Client{}
 	res, err := client.Do(req)
