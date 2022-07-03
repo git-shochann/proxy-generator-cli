@@ -5,7 +5,6 @@ import (
 	"log"
 	config "nhn-toast-api/configs"
 	"nhn-toast-api/internal"
-	"os"
 )
 
 func main() {
@@ -21,29 +20,30 @@ func main() {
 	token := t.Access.Token.ID
 
 	// イメージリストの取得
-	if _, err := os.Stat("../image-list.txt"); err != nil {
-		fmt.Println("Getting Image List...")
-		_, err = internal.GetImageList(token)
-		if err != nil {
-			log.Fatalln(err)
-		}
-		fmt.Println("done!")
-	}
+	// if _, err := os.Stat("../image-list.txt"); err != nil {
+	// 	fmt.Println("Getting Image List...")
+	// 	_, err = internal.GetImageList(token)
+	// 	if err != nil {
+	// 		log.Fatalln(err)
+	// 	}
+	// 	fmt.Println("done!")
+	// }
 
-	// インスタンスの作成
-	fmt.Println("Generating Instance...")
-	_, err = internal.Createinstance(token, config.Config.TenantID)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	fmt.Println("done!")
+	// // インスタンスの作成
+	// fmt.Println("Generating Instance...")
+	// _, err = internal.Createinstance(token, config.Config.TenantID)
+	// if err != nil {
+	// 	log.Fatalln(err)
+	// }
+	// fmt.Println("done!")
 
 	// floatingIP作成
 	fmt.Println("Generating GlobalIP...")
-	_, err = internal.CreateIP(token, config.Config.TenantID)
+	data, err := internal.CreateIP(token, config.Config.TenantID)
 	if err != nil {
 		log.Fatalln(err)
 	}
+	fmt.Println(data)
 	fmt.Println("done!")
 
 }

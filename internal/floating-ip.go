@@ -8,13 +8,16 @@ import (
 	"net/http"
 )
 
-const networkBaseURL = "https://jp1-api-network.infrastructure.cloud.toast.com"
+const (
+	networkBaseURL  = "https://jp1-api-network.infrastructure.cloud.toast.com"
+	publicNetWorkID = "117fa565-c8eb-4e58-a420-c5146e516341"
+)
 
 func CreateIP(token, tenantid string) (*response, error) {
 
 	request := request{
 		FloatingIP: networkID{
-			FloatingNetWorkID: "null",
+			FloatingNetWorkID: publicNetWorkID,
 		},
 	}
 
@@ -40,12 +43,12 @@ func CreateIP(token, tenantid string) (*response, error) {
 
 	defer res.Body.Close()
 
-	if res.StatusCode != 202 {
+	if res.StatusCode != 201 {
 		data, err := ioutil.ReadAll(res.Body)
 		if err != nil {
 			log.Fatalln(err)
 		}
-		log.Println(string(data))
+		log.Fatalln(string(data))
 	}
 
 	data, err := ioutil.ReadAll(res.Body)
@@ -71,6 +74,14 @@ type networkID struct {
 	FloatingNetWorkID string `json:"floating_network_id"`
 }
 
+type status string
+
+const (
+	active status = "ACTIVE"
+	down   status = "DOWN"
+	err    status = "ERROR"
+)
+
 type response struct {
 	Floatingip struct {
 		FloatingNetworkID string `json:"floating_network_id"`
@@ -78,7 +89,7 @@ type response struct {
 		FixedIPAddress    string `json:"fixed_ip_address"`
 		FloatingIPAddress string `json:"floating_ip_address"`
 		TenantID          string `json:"tenant_id"`
-		Status            string `json:"status"`
+		Status            status `json:"status"`
 		PortID            string `json:"port_id"`
 		ID                string `json:"id"`
 	} `json:"floatingip"`
