@@ -10,7 +10,7 @@ import (
 func main() {
 
 	// トークンの取得
-	fmt.Println("Getting Token...")
+	fmt.Println("Getting token...")
 	t, err := internal.GetToken()
 	if err != nil {
 		log.Fatalln(err)
@@ -30,20 +30,25 @@ func main() {
 	// }
 
 	// // インスタンスの作成
-	// fmt.Println("Generating Instance...")
-	// _, err = internal.Createinstance(token, config.Config.TenantID)
-	// if err != nil {
-	// 	log.Fatalln(err)
-	// }
-	// fmt.Println("done!")
-
-	// floatingIP作成
-	fmt.Println("Generating GlobalIP...")
-	data, err := internal.CreateIP(token, config.Config.TenantID)
+	fmt.Println("Generating Instance...")
+	instance, err := internal.Createinstance(token, config.Config.TenantID)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println(data)
+	fmt.Println(instance)
 	fmt.Println("done!")
+
+	// floatingIP作成
+	fmt.Println("Generating floatingIP...")
+	floatingip, err := internal.CreateFloatingIP(token, config.Config.TenantID)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println(floatingip)
+	fmt.Println("done!")
+
+	// floatingIP接続
+	fmt.Println("Connecting to instance...")
+	floatingip.ConnectingIP(token, instance.Server.ID)
 
 }

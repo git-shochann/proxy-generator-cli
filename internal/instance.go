@@ -41,7 +41,7 @@ func Createinstance(token string, tenantid string) (*ResponseInstance, error) {
 
 	encodedjson, err := json.Marshal(requestBody)
 	if err != nil {
-		log.Println(err)
+		log.Fatalln(err)
 	}
 
 	req, err := http.NewRequest("POST", endpoint, bytes.NewBuffer(encodedjson))
@@ -51,8 +51,6 @@ func Createinstance(token string, tenantid string) (*ResponseInstance, error) {
 
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Auth-Token", token)
-
-	// fmt.Println(req.Header)
 
 	client := http.Client{}
 	res, err := client.Do(req)

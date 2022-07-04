@@ -16,7 +16,6 @@ Web 上で NHNCloud の API を用いて自動でインスタンスの作成、�
 ├── docs
 │   ├── README.md
 │   ├── memo.md
-│   └── question.md
 ├── go.mod
 ├── go.sum
 ├── image-list.txt
