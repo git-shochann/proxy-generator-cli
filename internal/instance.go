@@ -118,6 +118,7 @@ type ResponseInstance struct {
 }
 
 func (r *ResponseInstance) GetInstanceInfo(token, tenantid string) (*GetInstanceInfoRes, error) {
+
 	endpoint := instanceBaseURL + "/v2/" + tenantid + "/servers/" + r.Server.ID
 
 	req, err := http.NewRequest("GET", endpoint, nil)
@@ -126,15 +127,15 @@ func (r *ResponseInstance) GetInstanceInfo(token, tenantid string) (*GetInstance
 	}
 	req.Header.Set("X-Auth-Token", token)
 
-	clieant := http.Client{}
-	res, err := clieant.Do(req)
+	cliant := http.Client{}
+	res, err := cliant.Do(req)
 	if err != nil {
 		log.Println(err)
 	}
 
 	defer res.Body.Close()
 
-	if res.StatusCode != 202 {
+	if res.StatusCode != 200 {
 		data, err := ioutil.ReadAll(res.Body)
 		if err != nil {
 			log.Fatalln(data)
@@ -154,9 +155,18 @@ func (r *ResponseInstance) GetInstanceInfo(token, tenantid string) (*GetInstance
 		log.Fatalln(data)
 	}
 
+	fmt.Println(GetInstanceInfoRes.Server.Status)
+
 	return &GetInstanceInfoRes, nil
 
 }
+
+type IPType string
+
+const (
+	fixed    IPType = "fixed"
+	floating IPType = "floating"
+)
 
 type GetInstanceInfoRes struct {
 	Server struct {
@@ -164,12 +174,12 @@ type GetInstanceInfoRes struct {
 		Updated   time.Time `json:"updated"`
 		HostID    string    `json:"hostId"`
 		Addresses struct {
-			Vpc2 []struct {
+			DefaultNetwork []struct {
 				OSEXTIPSMACMacAddr string `json:"OS-EXT-IPS-MAC:mac_addr"`
 				Version            int    `json:"version"`
 				Addr               string `json:"addr"`
-				OSEXTIPSType       string `json:"OS-EXT-IPS:type"`
-			} `json:"vpc2"`
+				OSEXTIPSType       IPType `json:"OS-EXT-IPS:type"`
+			} `json:"Default Network"`
 		} `json:"addresses"`
 		Links []struct {
 			Href string `json:"href"`
