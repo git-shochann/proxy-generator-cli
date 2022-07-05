@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 )
 
 const (
@@ -99,14 +100,14 @@ func CreateFloatingIP(token, tenantid string) (*CreatingIPRes, error) {
 	return &CreatingIPRes, err
 }
 
+// インスタンスにアタッチされているポートIDを先に取得して、ポートを取得することが出来る
+
 // Floating IP接続/解除
-func (c *CreatingIPRes) ConnectingIP(token, fixedip string) (*connectingIPRes, error) {
-	// fmt.Println(r.FloatingIP.FloatingIPAddress)
+func (c *CreatingIPRes) ConnectingIP(token string) (*connectingIPRes, error) {
 
 	requestBody := connectingIPReq{
 		FloatingIP: floatingIP2{
-			PortID:  "2317eb0a-d4ad-44ba-8888-d94a606a9057", // TODO: check later
-			FixedIP: fixedip,
+			PortID: "UUID", // TODO: change later
 		},
 	}
 
@@ -168,8 +169,7 @@ type connectingIPReq struct {
 }
 
 type floatingIP2 struct {
-	PortID  string `json:"port_id"`
-	FixedIP string `json:"fixed_ip_address"`
+	PortID string `json:"port_id"`
 }
 
 type connectingIPRes struct {
@@ -184,3 +184,26 @@ type connectingIPRes struct {
 		ID                string `json:"id"`
 	} `json:"floatingip"`
 }
+
+func (r *ResponseInstance) GetPortList(token string) {
+
+	endpoint := networkBaseURL + "/v2.0/" + "ports"
+	instance := r.Server.ID
+
+	req, err := http.NewRequest("GET", endpoint, nil)
+	if err != nil {
+		log.Fatalln(req)
+	}
+
+	q := req.URL.Query()
+	fmt.Println(q)
+
+	q.Add("device_id", instance)
+	fmt.Println(q)
+
+	os.Exit(1)
+}
+
+// GET /v2.0/ports
+// X-Auth-Token: {tokenId}
+// device_id	Query	UUID - 照会するポートを使用するリソースID
