@@ -21,6 +21,8 @@ func main() {
 
 	token := t.Access.Token.ID
 
+	tenantid := config.Config.TenantID
+
 	// イメージリストの取得
 	// if _, err := os.Stat("../image-list.txt"); err != nil {
 	// 	fmt.Println("Getting Image List...")
@@ -33,7 +35,7 @@ func main() {
 
 	// // インスタンスの作成
 	fmt.Println("Generating Instance...")
-	instance, err := internal.Createinstance(token, config.Config.TenantID)
+	instance, err := internal.Createinstance(token, tenantid)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -45,12 +47,12 @@ func main() {
 	var GetInstanceInfoRes *internal.GetInstanceInfoRes
 
 	count := 0
-	// 1回目: 0 < 5 左辺が上辺より小さいかどうか / 2回目: 1 < 5 左辺が右辺より小さいかどうか
+	// 5回までリトライ
 	for count < 5 {
 		time.Sleep(time.Second * 10)
 		times := "Getting Server Detail" + "(" + strconv.Itoa(count) + ")"
 		fmt.Println(times)
-		instanceInfo, err := instance.GetInstanceInfo(token, config.Config.TenantID)
+		instanceInfo, err := instance.GetInstanceInfo(token, tenantid)
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -67,7 +69,7 @@ func main() {
 
 	// floatingIP作成
 	// fmt.Println("Generating floatingIP...")
-	// floatingip, err := internal.CreateFloatingIP(token, config.Config.TenantID)
+	// floatingip, err := internal.CreateFloatingIP(token, tenantid)
 	// if err != nil {
 	// 	log.Fatalln(err)
 	// }
