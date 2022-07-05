@@ -38,17 +38,26 @@ func main() {
 	fmt.Println(instance)
 	fmt.Println("done!")
 
-	// floatingIP作成
-	fmt.Println("Generating floatingIP...")
-	floatingip, err := internal.CreateFloatingIP(token, config.Config.TenantID)
+	// インスタンス詳細情報の取得
+	fmt.Println("Getting Server Detail...")
+	instanceInfo, err := instance.GetInstanceInfo(token, config.Config.TenantID)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fmt.Println(floatingip)
+	fmt.Println(instanceInfo)
 	fmt.Println("done!")
 
-	// floatingIP接続
-	fmt.Println("Connecting to instance...")
-	floatingip.ConnectingIP(token, instance.Server.ID)
+	// floatingIP作成
+	// fmt.Println("Generating floatingIP...")
+	// floatingip, err := internal.CreateFloatingIP(token, config.Config.TenantID)
+	// if err != nil {
+	// 	log.Fatalln(err)
+	// }
+	// fmt.Println(floatingip)
+	// fmt.Println("done!")
+
+	// // floatingIP接続
+	// fmt.Println("Connecting to instance...")
+	// floatingip.ConnectingIP(token, instance.Server.ID) // fixed_ip 192~
 
 }

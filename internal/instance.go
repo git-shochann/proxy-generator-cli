@@ -9,6 +9,7 @@ import (
 	"net/http"
 	config "nhn-toast-api/configs"
 	"nhn-toast-api/pkg"
+	"time"
 )
 
 const (
@@ -113,5 +114,117 @@ type ResponseInstance struct {
 			Href string `json:"href"`
 			Rel  string `json:"rel"`
 		} `json:"links"`
+	} `json:"server"`
+}
+
+func (r *ResponseInstance) GetInstanceInfo(token, tenantid string) (*GetInstanceInfoRes, error) {
+	endpoint := instanceBaseURL + "/v2/" + tenantid + "/servers/" + r.Server.ID
+
+	req, err := http.NewRequest("GET", endpoint, nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	req.Header.Set("X-Auth-Token", token)
+
+	clieant := http.Client{}
+	res, err := clieant.Do(req)
+	if err != nil {
+		log.Println(err)
+	}
+
+	defer res.Body.Close()
+
+	if res.StatusCode != 202 {
+		data, err := ioutil.ReadAll(res.Body)
+		if err != nil {
+			log.Fatalln(data)
+		}
+		log.Fatalln(string(data))
+	}
+
+	data, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Fatalln(data)
+	}
+
+	var GetInstanceInfoRes GetInstanceInfoRes
+
+	err = json.Unmarshal(data, &GetInstanceInfoRes)
+	if err != nil {
+		log.Fatalln(data)
+	}
+
+	return &GetInstanceInfoRes, nil
+
+}
+
+type GetInstanceInfoRes struct {
+	Server struct {
+		Status    string    `json:"status"`
+		Updated   time.Time `json:"updated"`
+		HostID    string    `json:"hostId"`
+		Addresses struct {
+			Vpc2 []struct {
+				OSEXTIPSMACMacAddr string `json:"OS-EXT-IPS-MAC:mac_addr"`
+				Version            int    `json:"version"`
+				Addr               string `json:"addr"`
+				OSEXTIPSType       string `json:"OS-EXT-IPS:type"`
+			} `json:"vpc2"`
+		} `json:"addresses"`
+		Links []struct {
+			Href string `json:"href"`
+			Rel  string `json:"rel"`
+		} `json:"links"`
+		KeyName string `json:"key_name"`
+		Image   struct {
+			ID    string `json:"id"`
+			Links []struct {
+				Href string `json:"href"`
+				Rel  string `json:"rel"`
+			} `json:"links"`
+		} `json:"image"`
+		OSEXTSTSTaskState  interface{} `json:"OS-EXT-STS:task_state"`
+		OSEXTSTSVMState    string      `json:"OS-EXT-STS:vm_state"`
+		OSSRVUSGLaunchedAt string      `json:"OS-SRV-USG:launched_at"`
+		Flavor             struct {
+			ID    string `json:"id"`
+			Links []struct {
+				Href string `json:"href"`
+				Rel  string `json:"rel"`
+			} `json:"links"`
+		} `json:"flavor"`
+		ID             string `json:"id"`
+		SecurityGroups []struct {
+			Name string `json:"name"`
+		} `json:"security_groups"`
+		OSSRVUSGTerminatedAt             interface{} `json:"OS-SRV-USG:terminated_at"`
+		OSEXTAZAvailabilityZone          string      `json:"OS-EXT-AZ:availability_zone"`
+		UserID                           string      `json:"user_id"`
+		Name                             string      `json:"name"`
+		Created                          time.Time   `json:"created"`
+		TenantID                         string      `json:"tenant_id"`
+		OSDCFDiskConfig                  string      `json:"OS-DCF:diskConfig"`
+		OsExtendedVolumesVolumesAttached []struct {
+			ID string `json:"id"`
+		} `json:"os-extended-volumes:volumes_attached"`
+		AccessIPv4         string `json:"accessIPv4"`
+		AccessIPv6         string `json:"accessIPv6"`
+		Progress           int    `json:"progress"`
+		OSEXTSTSPowerState int    `json:"OS-EXT-STS:power_state"`
+		ConfigDrive        string `json:"config_drive"`
+		Metadata           struct {
+			OsDistro        string `json:"os_distro"`
+			Description     string `json:"description"`
+			OsVersion       string `json:"os_version"`
+			ProjectDomain   string `json:"project_domain"`
+			HypervisorType  string `json:"hypervisor_type"`
+			MonitoringAgent string `json:"monitoring_agent"`
+			ImageName       string `json:"image_name"`
+			VolumeSize      string `json:"volume_size"`
+			OsArchitecture  string `json:"os_architecture"`
+			LoginUsername   string `json:"login_username"`
+			OsType          string `json:"os_type"`
+			TcEnv           string `json:"tc_env"`
+		} `json:"metadata"`
 	} `json:"server"`
 }

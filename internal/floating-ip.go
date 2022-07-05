@@ -169,7 +169,7 @@ type connectingIPReq struct {
 
 type floatingIP2 struct {
 	PortID  string `json:"port_id"`
-	FixedIP string `json:fixed_ip_address`
+	FixedIP string `json:"fixed_ip_address"`
 }
 
 type connectingIPRes struct {
