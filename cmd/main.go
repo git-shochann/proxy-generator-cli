@@ -5,6 +5,8 @@ import (
 	"log"
 	config "nhn-toast-api/configs"
 	"nhn-toast-api/internal"
+	"strconv"
+	"time"
 )
 
 func main() {
@@ -40,23 +42,27 @@ func main() {
 
 	// インスタンス詳細情報の取得
 
-	// count := 0
-	// // 1回目: 0 < 5 左辺が上辺より小さいかどうか / 2回目: 1 < 5 左辺が右辺より小さいかどうか
-	// for count < 5 {
-	// 	time.Sleep(time.Second * 10)
-	// 	times := "Getting Server Detail" + strconv.Itoa(count) + "Times"
-	// 	fmt.Println(times)
-	// 	instanceInfo, err := instance.GetInstanceInfo(token, config.Config.TenantID)
-	// 	if err != nil {
-	// 		log.Fatalln(err)
-	// 	}
-	// 	if instanceInfo.Server.Status == "BUILD" {
-	// 		count += 1
-	// 		continue
-	// 	}
-	// 	break
-	// }
+	var GetInstanceInfoRes *internal.GetInstanceInfoRes
 
+	count := 0
+	// 1回目: 0 < 5 左辺が上辺より小さいかどうか / 2回目: 1 < 5 左辺が右辺より小さいかどうか
+	for count < 5 {
+		time.Sleep(time.Second * 10)
+		times := "Getting Server Detail" + "(" + strconv.Itoa(count) + ")"
+		fmt.Println(times)
+		instanceInfo, err := instance.GetInstanceInfo(token, config.Config.TenantID)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		if instanceInfo.Server.Status == "BUILD" {
+			count += 1
+			continue
+		}
+		GetInstanceInfoRes = instanceInfo
+		break
+	}
+
+	fmt.Println(GetInstanceInfoRes)
 	fmt.Println("done!")
 
 	// floatingIP作成
