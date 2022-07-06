@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 )
 
 const (
@@ -103,17 +102,13 @@ func CreateFloatingIP(token, tenantid string) (*CreatingIPRes, error) {
 // インスタンスにアタッチされているポートIDを先に取得して、ポートを取得することが出来る
 
 // Floating IP接続/解除
-func (c *CreatingIPRes) ConnectingIP(token string) (*connectingIPRes, error) {
+func (c *CreatingIPRes) ConnectingIP(token, portid string) (*connectingIPRes, error) {
 
 	requestBody := connectingIPReq{
 		FloatingIP: floatingIP2{
-			PortID: "UUID", // TODO: change later
+			PortID: portid,
 		},
 	}
-
-	fmt.Println("---")
-	fmt.Println(requestBody)
-	fmt.Println("---")
 
 	floatingipID := c.FloatingIP.ID
 
@@ -141,7 +136,7 @@ func (c *CreatingIPRes) ConnectingIP(token string) (*connectingIPRes, error) {
 
 	defer res.Body.Close()
 
-	if res.StatusCode != 202 {
+	if res.StatusCode != 200 {
 		data, err := ioutil.ReadAll(res.Body)
 		if err != nil {
 			log.Fatalln(err)
@@ -185,7 +180,8 @@ type connectingIPRes struct {
 	} `json:"floatingip"`
 }
 
-func (r *ResponseInstance) GetPortList(token string) {
+// インスタンスのポートIDを取得する
+func (r *ResponseInstance) GetPortList(token string) (*GetPortListRes, error) {
 
 	endpoint := networkBaseURL + "/v2.0/" + "ports"
 	instance := r.Server.ID
@@ -195,15 +191,79 @@ func (r *ResponseInstance) GetPortList(token string) {
 		log.Fatalln(req)
 	}
 
-	q := req.URL.Query()
-	fmt.Println(q)
+	// fmt.Printf("%T, %v", req.URL.RawQuery, req.URL.RawQuery) // string, ""
 
-	q.Add("device_id", instance)
-	fmt.Println(q)
+	q := req.URL.Query() // map[] / map[string][]string を返す -> 空のMapを作成する
 
-	os.Exit(1)
+	q.Add("device_id", instance) // map[device_id:[d66714dd-ca16-416b-9bfa-2a16ca48089f]]
+
+	encodedquery := q.Encode() // device_id=d0e79f94-ebc9-46dd-a239-5a73a77a19bf
+
+	req.URL.RawQuery = encodedquery // device_id=d0e79f94-ebc9-46dd-a239-5a73a77a19bf
+
+	req.Header.Set("X-Auth-Token", token)
+
+	fmt.Println(req)
+	cliant := http.Client{}
+	res, err := cliant.Do(req)
+	if err != nil {
+		log.Fatalln(req)
+	}
+
+	defer res.Body.Close()
+
+	if res.StatusCode != 200 {
+		data, err := ioutil.ReadAll(res.Body)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		log.Fatalln(string(data))
+	}
+
+	data, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	var GetPortListRes GetPortListRes
+
+	err = json.Unmarshal(data, &GetPortListRes)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	return &GetPortListRes, nil
 }
 
-// GET /v2.0/ports
-// X-Auth-Token: {tokenId}
-// device_id	Query	UUID - 照会するポートを使用するリソースID
+type GetPortListRes struct {
+	Ports []Ports `json:"ports"`
+}
+
+type Ports struct {
+	Status string `json:"status"`
+	Name   string `json:"name"`
+	// AllowedAddressPairs []AllowedAddressPairs `json:"allowed_address_pairs"`
+	AdminStateUp bool   `json:"admin_state_up"`
+	NetworkID    string `json:"network_id"`
+	TenantID     string `json:"tenant_id"`
+	// ExtraDhcpOpt        []ExtraDhcpOpt        `json:"extra_dhcp_opts"`
+	BindingVnicType     string     `json:"binding:vnic_type"`
+	DeviceOwner         string     `json:"device_owner"`
+	MacAddress          string     `json:"mac_address"`
+	PortSecurityEnabled bool       `json:"port_security_enabled"`
+	FixedIps            []FixedIps `json:"fixed_ips"`
+	ID                  string     `json:"id"`
+	// SecurityGroups      []SecurityGroups      `json:"security_groups"`
+	DeviceID string `json:"device_id"`
+}
+
+// type AllowedAddressPairs struct{}
+
+// type ExtraDhcpOpt struct{}
+
+type FixedIps struct {
+	SubnetID  string `json:"subnet_id"`
+	IPAddress string `json:"ip_address"`
+}
+
+// type SecurityGroups struct{}
