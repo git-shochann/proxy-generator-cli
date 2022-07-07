@@ -9,9 +9,11 @@
 - ユーザー名
 - パスワード
 
-WebApplication(Login 有) or cli ?
+cli を作成する
 
 ## 流れ
+
+ログイン ID とパスワードを検証
 
 インスタンス作成
 ↓
