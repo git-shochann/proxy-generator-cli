@@ -1,7 +1,7 @@
 /*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
+Copyright © 2022 git-shochann t0825.st@gmail.com
 */
+
 package cmd
 
 import (
@@ -27,6 +27,8 @@ to quickly create a Cobra application.`,
 
 func init() {
 	rootCmd.AddCommand(configCmd)
+
+	// configCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Here you will define your flags and configuration settings.
 

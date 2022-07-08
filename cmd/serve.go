@@ -1,6 +1,5 @@
 /*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
+Copyright © 2022 git-shochann t0825.st@gmail.com
 */
 package cmd
 
