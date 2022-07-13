@@ -3,6 +3,7 @@ package internal
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	config "nhn-toast-api/configs"
@@ -26,8 +27,9 @@ type Passwordcredentials struct {
 	Password string `json:"password"`
 }
 
-// ポインタ型のToken構造体とerrorインターフェースを返すということは独自でerrorインターフェースを実装しているstructの定義が必要ですか？
-func GetToken() (*Response, error) {
+func GetToken() (*GetTokenRes, error) {
+
+	fmt.Println("Gettting Token...")
 
 	// 構造体の初期化
 	requestBody := Request{
@@ -66,20 +68,20 @@ func GetToken() (*Response, error) {
 	}
 
 	// レスポンスのstructの初期化 この時点ではnil
-	var response Response
+	var GetTokenRes GetTokenRes
 
 	// アドレスを渡して直接操作する(実際にデータを参照して変更を加える)
-	err = json.Unmarshal(data, &response)
+	err = json.Unmarshal(data, &GetTokenRes)
 	if err != nil {
 		return nil, err
 	}
 
-	return &response, nil
+	return &GetTokenRes, nil
 
 }
 
 /* レスポンスで必要なstruct */
-type Response struct {
+type GetTokenRes struct {
 	Access struct {
 		Token struct {
 			ID      string    `json:"id"`

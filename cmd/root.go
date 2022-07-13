@@ -1,7 +1,7 @@
 /*
-Copyright © 2022 sho
-
+Copyright © 2022 t0825.st@gmail.com
 */
+
 package cmd
 
 import (
@@ -15,6 +15,7 @@ import (
 var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
+// この場合は "nhn-toast-api" と入力して実行される
 var rootCmd = &cobra.Command{
 	Use:   "nhn-toast-api",
 	Short: "A brief description of your application",
@@ -26,7 +27,8 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+	// 以下に処理を書いていく
+	// Run: func(cmd *cobra.Command, args []string) {},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -38,6 +40,7 @@ func Execute() {
 	}
 }
 
+// コマンド, フラグの設定
 func init() {
 	cobra.OnInitialize(initConfig)
 
@@ -49,6 +52,7 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
+	// 1, フラグ名 2, 省略したフラグ名 3, デフォルト値 4, フラグの説明
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
@@ -62,6 +66,7 @@ func initConfig() {
 		home, err := os.UserHomeDir()
 		cobra.CheckErr(err)
 
+		// yamlファイルの作成必要
 		// Search config in home directory with name ".nhn-toast-api" (without extension).
 		viper.AddConfigPath(home)
 		viper.SetConfigType("yaml")
