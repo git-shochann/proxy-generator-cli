@@ -14,8 +14,6 @@ import (
 
 var cfgFile string
 
-// rootCmd represents the base command when called without any subcommands
-// この場合は "nhn-toast-api" と入力して実行される
 var rootCmd = &cobra.Command{
 	Use:   "nhn-toast-api",
 	Short: "A brief description of your application",
@@ -25,10 +23,6 @@ examples and usage of using your application. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// 以下に処理を書いていく
-	// Run: func(cmd *cobra.Command, args []string) {},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -66,8 +60,6 @@ func initConfig() {
 		home, err := os.UserHomeDir()
 		cobra.CheckErr(err)
 
-		// yamlファイルの作成必要
-		// Search config in home directory with name ".nhn-toast-api" (without extension).
 		viper.AddConfigPath(home)
 		viper.SetConfigType("yaml")
 		viper.SetConfigName(".nhn-toast-api")

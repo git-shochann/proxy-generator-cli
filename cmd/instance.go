@@ -7,14 +7,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var Token string
-var TenantID string
-
 // 構造体の初期化
 var createCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create an instance and attach a global IP.",
-	RunE: func(cmd *cobra.Command, args []string) error { // TODO: check
+	RunE: func(cmd *cobra.Command, args []string) error {
 		// トークンの取得
 		token, err := internal.GetToken()
 		if err != nil {
