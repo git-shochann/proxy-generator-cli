@@ -15,8 +15,9 @@ import (
 var cfgFile string
 
 var rootCmd = &cobra.Command{
-	Use:   "nhn-toast-api",
-	Short: "A brief description of your application",
+	Use:     "nhn-toast-api",
+	Version: "0.0.1",
+	Short:   "A brief description of your application",
 	Long: `A longer description that spans multiple lines and likely contains
 examples and usage of using your application. For example:
 
