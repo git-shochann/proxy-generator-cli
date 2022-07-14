@@ -1,10 +1,12 @@
 # Proxy Generator
 
-Web 上で NHNCloud の API を用いて自動でインスタンスの作成、全件取得、指定したインスタンスを開始、停止
+## Feature
+
+NHNCloud にて自動でインスタンスの作成、全件取得、指定したインスタンスを開始、停止
 またグローバル IP のアタッチ、デタッチを行います。
 グローバル IP がアタッチされているサーバーに関しては、SSH 接続の上、Squid を用いて Proxy サーバーの自動生成を行います。
 
-## 各ディレクトリ、ファイルの構成
+## Configuration
 
 ```Markdown
 .
@@ -29,7 +31,9 @@ Web 上で NHNCloud の API を用いて自動でインスタンスの作成、�
 └── random.go // ランダムの名前を生成
 ```
 
-## 必須事項の設定
+## Requiring Setting
+
+以下の形式に沿った Yaml ファイルを作成する必要があります。
 
 ```Yaml
 credentials:
@@ -38,3 +42,5 @@ credentials:
   password: <TenantIDに対するPassWord>
   keyname: <ssh接続するためのキー名, NHN Cloud Consoleから取得する>
 ```
+
+## How To Use
