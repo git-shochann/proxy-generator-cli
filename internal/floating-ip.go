@@ -3,7 +3,6 @@ package internal
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -46,7 +45,7 @@ type FloatingIP struct {
 }
 
 // floatingIP作成
-func CreateFloatingIP(token, tenantid string) (*CreatingIPRes, error) {
+func CreateFloatingIP(token *GetTokenRes, tenantid string) (*CreatingIPRes, error) {
 
 	requestBody := request{
 		FloatingIP: networkID{
@@ -66,7 +65,7 @@ func CreateFloatingIP(token, tenantid string) (*CreatingIPRes, error) {
 		log.Fatalln(err)
 	}
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Auth-Token", token)
+	req.Header.Set("X-Auth-Token", token.Access.Token.ID)
 
 	client := http.Client{}
 	res, err := client.Do(req)
@@ -102,7 +101,10 @@ func CreateFloatingIP(token, tenantid string) (*CreatingIPRes, error) {
 // インスタンスにアタッチされているポートIDを先に取得して、ポートを取得することが出来る
 
 // Floating IP接続/解除
-func (c *CreatingIPRes) ConnectingIP(token, portid string) (*connectingIPRes, error) {
+func ConnectingIP(token *GetTokenRes, floatingip *CreatingIPRes, portinfo *GetPortListRes) (*connectingIPRes, error) {
+
+	floatingipid := floatingip.FloatingIP.ID
+	portid := portinfo.Ports[0].ID
 
 	requestBody := connectingIPReq{
 		FloatingIP: floatingIP2{
@@ -110,9 +112,7 @@ func (c *CreatingIPRes) ConnectingIP(token, portid string) (*connectingIPRes, er
 		},
 	}
 
-	floatingipID := c.FloatingIP.ID
-
-	endpoint := networkBaseURL + "/v2.0/" + "floatingips/" + floatingipID
+	endpoint := networkBaseURL + "/v2.0/" + "floatingips/" + floatingipid
 
 	encodedjson, err := json.Marshal(requestBody)
 	if err != nil {
@@ -125,11 +125,10 @@ func (c *CreatingIPRes) ConnectingIP(token, portid string) (*connectingIPRes, er
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Auth-Token", token)
+	req.Header.Set("X-Auth-Token", token.Access.Token.ID)
 
 	client := http.Client{}
 	res, err := client.Do(req)
-	fmt.Println(res)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -181,10 +180,9 @@ type connectingIPRes struct {
 }
 
 // インスタンスのポートIDを取得する
-func (r *ResponseInstance) GetPortList(token string) (*GetPortListRes, error) {
+func GetPortList(token *GetTokenRes, instance *CreateInstanceRes) (*GetPortListRes, error) {
 
 	endpoint := networkBaseURL + "/v2.0/" + "ports"
-	instance := r.Server.ID
 
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
@@ -195,15 +193,14 @@ func (r *ResponseInstance) GetPortList(token string) (*GetPortListRes, error) {
 
 	q := req.URL.Query() // map[] / map[string][]string を返す -> 空のMapを作成する
 
-	q.Add("device_id", instance) // map[device_id:[d66714dd-ca16-416b-9bfa-2a16ca48089f]]
+	q.Add("device_id", instance.Server.ID) // map[device_id:[d66714dd-ca16-416b-9bfa-2a16ca48089f]]
 
 	encodedquery := q.Encode() // device_id=d0e79f94-ebc9-46dd-a239-5a73a77a19bf
 
 	req.URL.RawQuery = encodedquery // device_id=d0e79f94-ebc9-46dd-a239-5a73a77a19bf
 
-	req.Header.Set("X-Auth-Token", token)
+	req.Header.Set("X-Auth-Token", token.Access.Token.ID)
 
-	fmt.Println(req)
 	cliant := http.Client{}
 	res, err := cliant.Do(req)
 	if err != nil {

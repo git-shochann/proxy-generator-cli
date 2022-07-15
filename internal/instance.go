@@ -13,19 +13,18 @@ import (
 )
 
 const (
-	imageID         string = "ae0b0150-fd2e-411e-8c41-4f22b371ef81" // centos
+	imageID         string = "ae0b0150-fd2e-411e-8c41-4f22b371ef81" // CentOS
 	u2Instance      string = "b41750b4-d819-487d-84bc-89fc7a6d0df1"
-	t2Instance      string = "2718e9c1-b887-460b-bf4e-abcc2b010ec6" // t2を使用する場合リクエストの内容が変わる
 	subnetID        string = "b9196e60-934c-40ea-af80-f5c7e991d3fd"
 	instanceBaseURL string = "https://jp1-api-instance.infrastructure.cloud.toast.com"
 )
 
-func Createinstance(token string, tenantid string) (*ResponseInstance, error) {
+func CreateInstance(token *GetTokenRes, tenantid string) (*CreateInstanceRes, error) {
 
-	// サーバーネームをランダムで出力する
+	fmt.Println("Create Instance...")
+
 	randomName := pkg.RandomGenerate(10)
 
-	// リクエストをするための構造体の初期化
 	requestBody := RequestInstance{
 		Server: Server{
 			Name:      randomName,
@@ -51,11 +50,10 @@ func Createinstance(token string, tenantid string) (*ResponseInstance, error) {
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Auth-Token", token)
+	req.Header.Set("X-Auth-Token", token.Access.Token.ID)
 
 	client := http.Client{}
 	res, err := client.Do(req)
-	fmt.Println(res)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -75,7 +73,7 @@ func Createinstance(token string, tenantid string) (*ResponseInstance, error) {
 		log.Fatalln(err)
 	}
 
-	var response ResponseInstance
+	var response CreateInstanceRes
 
 	err = json.Unmarshal(data, &response)
 	if err != nil {
@@ -103,7 +101,7 @@ type NetWorks struct {
 }
 
 // Response
-type ResponseInstance struct {
+type CreateInstanceRes struct {
 	Server struct {
 		SecurityGroups []struct {
 			Name string `json:"name"`
@@ -117,7 +115,7 @@ type ResponseInstance struct {
 	} `json:"server"`
 }
 
-func (r *ResponseInstance) GetInstanceInfo(token, tenantid string) (*GetInstanceInfoRes, error) {
+func (r *CreateInstanceRes) GetInstanceInfo(token, tenantid string) (*GetInstanceInfoRes, error) {
 
 	endpoint := instanceBaseURL + "/v2/" + tenantid + "/servers/" + r.Server.ID
 
@@ -154,8 +152,6 @@ func (r *ResponseInstance) GetInstanceInfo(token, tenantid string) (*GetInstance
 	if err != nil {
 		log.Fatalln(data)
 	}
-
-	fmt.Println(GetInstanceInfoRes.Server.Status)
 
 	return &GetInstanceInfoRes, nil
 
