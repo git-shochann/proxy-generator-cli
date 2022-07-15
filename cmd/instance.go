@@ -7,22 +7,22 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// 構造体の初期化
+// インスタンスを作成
 var createCmd = &cobra.Command{
 	Use:   "create",
-	Short: "Create an instance and attach a global IP.",
+	Short: "Create an instance, attach an IP, and build a Proxy server",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// トークンの取得
 		token, err := internal.GetToken()
 		if err != nil {
 			log.Fatalln(err)
 		}
-		Token = token.Access.Token.ID
-		// TenantID =
-		// instance, err = internal.Createinstance(Token)
+		newToken := token.Access.Token.ID
+		// インスタンスの作成
+		return nil
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(createCmd)
+	rootCmd.AddCommand(createCmd) // インスタンスを作成するコマンド(createCmd)をルートコマンドに追加する
 }

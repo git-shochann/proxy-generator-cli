@@ -5,14 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	config "nhn-toast-api/configs"
 	"time"
 )
 
-var tokenEndPoint = "https://api-identity.infrastructure.cloud.toast.com/v2.0/tokens"
-
-// リクエストで必要なstruct
 type Request struct {
 	Auth Data `json:"auth"`
 }
@@ -29,9 +27,10 @@ type Passwordcredentials struct {
 
 func GetToken() (*GetTokenRes, error) {
 
+	tokenEndPoint := "https://api-identity.infrastructure.cloud.toast.com/v2.0/tokens"
+
 	fmt.Println("Gettting Token...")
 
-	// 構造体の初期化
 	requestBody := Request{
 		Auth: Data{
 			Tenantid: config.Config.TenantID,
@@ -44,12 +43,12 @@ func GetToken() (*GetTokenRes, error) {
 
 	encodedjson, err := json.Marshal(requestBody)
 	if err != nil {
-		return nil, err
+		log.Fatalln(err)
 	}
 
 	req, err := http.NewRequest("POST", tokenEndPoint, bytes.NewBuffer(encodedjson))
 	if err != nil {
-		return nil, err
+		log.Fatalln(err)
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -57,14 +56,14 @@ func GetToken() (*GetTokenRes, error) {
 	client := http.Client{}
 	res, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		log.Fatalln(err)
 	}
 
 	defer res.Body.Close()
 
 	data, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return nil, err
+		log.Fatalln(err)
 	}
 
 	// レスポンスのstructの初期化 この時点ではnil
@@ -73,14 +72,13 @@ func GetToken() (*GetTokenRes, error) {
 	// アドレスを渡して直接操作する(実際にデータを参照して変更を加える)
 	err = json.Unmarshal(data, &GetTokenRes)
 	if err != nil {
-		return nil, err
+		log.Fatalln(err)
 	}
 
 	return &GetTokenRes, nil
 
 }
 
-/* レスポンスで必要なstruct */
 type GetTokenRes struct {
 	Access struct {
 		Token struct {

@@ -3,12 +3,23 @@ package temp
 import (
 	"fmt"
 	"log"
+	config "nhn-toast-api/configs"
 	"nhn-toast-api/internal"
 	"strconv"
 	"time"
 )
 
 func temp() {
+
+	t, err := internal.GetToken()
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println("done!")
+
+	token := t.Access.Token.ID
+
+	tenantid := config.Config.TenantID
 
 	// イメージリストの取得
 	// if _, err := os.Stat("../image-list.txt"); err != nil {

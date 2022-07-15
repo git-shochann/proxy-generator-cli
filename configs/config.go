@@ -21,7 +21,7 @@ func init() {
 
 // 先に構造体を初期化しておく
 func LoadConfig() {
-	cfg, err := ini.Load("../configs/config.ini")
+	cfg, err := ini.Load("configs/config.ini")
 	if err != nil {
 		log.Fatalln(err)
 	}
