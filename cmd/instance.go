@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
+	"golang.org/x/crypto/ssh"
 )
 
 var tenantid = config.Config.TenantID
@@ -58,13 +59,29 @@ var createCmd = &cobra.Command{
 
 		// IPをインスタンスに接続
 		fmt.Println("Connecting to instance...")
-		_, err = internal.ConnectingIP(token, floatingip, portinfo)
+		connectedInstance, err := internal.ConnectingIP(token, floatingip, portinfo)
 		if err != nil {
 			log.Fatalln(err)
 		}
 		fmt.Println("Done!")
+		fmt.Println(connectedInstance)
+
+		// ssh接続を行いシェルスクリプトの実行
+		ip := connectedInstance.Floatingip.FloatingIPAddress
+		port := "22"
+		user := "centos"
+
+		// buf, err := ioutil.ReadFile("")
+
+		config := &ssh.ClientConfig{
+			User: user,
+			Auth: []ssh.AuthMethod{
+				ssh
+			}
+		}
 
 		return nil
+
 	},
 }
 
