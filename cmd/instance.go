@@ -2,23 +2,35 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	config "nhn-toast-api/configs"
 	"nhn-toast-api/internal"
-	"strconv"
 	"time"
 
 	"github.com/spf13/cobra"
-	"golang.org/x/crypto/ssh"
 )
 
 var tenantid = config.Config.TenantID
 
 // インスタンスを作成
 var createCmd = &cobra.Command{
+	Args:  cobra.ExactArgs(1),
 	Use:   "create",
 	Short: "Create an instance, attach an IP, and build a Proxy server",
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		var pemFile []byte
+
+		for _, v := range args {
+			file, err := ioutil.ReadFile(v)
+			if err != nil {
+				log.Fatalln(err)
+			}
+
+			pemFile = file
+		}
+
 		// トークンの取得
 		token, err := internal.GetToken()
 		if err != nil {
@@ -38,28 +50,31 @@ var createCmd = &cobra.Command{
 			log.Fatalln(err)
 		}
 
+		time.Sleep(5)
+
 		// ポートID取得
-		var portinfo *internal.GetPortListRes
-		count := 1
-		for count < 5 {
-			time.Sleep(time.Second * 10)
-			times := "Getting Port List..." + "(" + strconv.Itoa(count) + ")"
-			fmt.Println(times)
-			port, err := internal.GetPortList(token, instance)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			if len(port.Ports) == 0 {
-				count += 1
-				continue
-			}
-			portinfo = port
-			break
+		// var portinfo *internal.GetPortListRes
+		// count := 1
+		// for count < 5 {
+		// 	time.Sleep(time.Second * 10)
+		// 	times := "Getting Port List..." + "(" + strconv.Itoa(count) + ")"
+		fmt.Println("Getting Port List...")
+		// 	fmt.Println(times)
+		portlist, err := internal.GetPortList(token, instance)
+		if err != nil {
+			log.Fatalln(err)
 		}
+		// if len(port.Ports) == 0 {
+		// 	count += 1
+		// 	continue
+		// }
+		// 	portinfo = port
+		// 	break
+		// }
 
 		// IPをインスタンスに接続
 		fmt.Println("Connecting to instance...")
-		connectedInstance, err := internal.ConnectingIP(token, floatingip, portinfo)
+		connectedInstance, err := internal.ConnectingIP(token, floatingip, portlist)
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -71,14 +86,12 @@ var createCmd = &cobra.Command{
 		port := "22"
 		user := "centos"
 
-		// buf, err := ioutil.ReadFile("")
-
-		config := &ssh.ClientConfig{
-			User: user,
-			Auth: []ssh.AuthMethod{
-				ssh
-			}
+		session, err := internal.SSHwithPublicKeyAuthentication(ip, port, user, pemFile)
+		if err != nil {
+			fmt.Println(err)
 		}
+
+		fmt.Println(session)
 
 		return nil
 

@@ -33,7 +33,7 @@ NHNCloud にて自動でインスタンスの作成、全件取得、指定し�
 
 ## Requiring Setting
 
-以下の形式に沿った Yaml ファイルを作成する必要があります。
+1, 以下の形式に沿った Yaml ファイルを作成する必要があります。
 
 ```Yaml
 credentials:
@@ -43,4 +43,12 @@ credentials:
   keyname: <ssh接続するためのキー名, NHN Cloud Consoleから取得する>
 ```
 
+2, ssh 接続を許可するために NHN Cloud のサイトにて 22 ポートを解放する必要があります。
+
 ## How To Use
+
+1, 起動後.pem(秘密鍵をドラッグ&ドロップでスタート)
+
+```Shell
+  nhn-toast-api create [your nhn cloud private key]
+```
