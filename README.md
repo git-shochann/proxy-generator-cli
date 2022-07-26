@@ -47,7 +47,7 @@ credentials:
 
 ## How To Use
 
-1, 起動後.pem(秘密鍵をドラッグ&ドロップでスタート)
+1, 起動後.pem(秘密鍵をドラッグ&ドロップでスタート) // 適切な場所に置かないと権限エラーになる 場所を指定した方がいいかもしれない
 
 ```Shell
   nhn-toast-api create [your nhn cloud private key]

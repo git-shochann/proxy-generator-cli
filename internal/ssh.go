@@ -32,6 +32,9 @@ func SSHwithPublicKeyAuthentication(ip, port, user string, privateKey []byte) (*
 
 	defer connection.Close()
 
+	fmt.Println("done!")
+	fmt.Println(connection)
+
 	// ここで処理が終わっている
 
 	// セッションを開く
@@ -50,6 +53,7 @@ func SSHwithPublicKeyAuthentication(ip, port, user string, privateKey []byte) (*
 	session.Stderr = os.Stderr
 
 	fmt.Println("start script")
+
 	// シェルスクリプトの実行
 	if err = session.Run("echo hello world"); err != nil {
 		log.Fatalln(err)

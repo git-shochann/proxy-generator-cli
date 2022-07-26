@@ -50,7 +50,7 @@ var createCmd = &cobra.Command{
 			log.Fatalln(err)
 		}
 
-		time.Sleep(5)
+		time.Sleep(10 * time.Second)
 
 		// ポートID取得
 		// var portinfo *internal.GetPortListRes
@@ -79,7 +79,22 @@ var createCmd = &cobra.Command{
 			log.Fatalln(err)
 		}
 		fmt.Println("Done!")
-		fmt.Println(connectedInstance)
+		fmt.Printf("%+v", connectedInstance)
+
+		// ここでStatusのチェック処理を入れる -> ACTIVEであれば処理を続ける 5回まで繰り返す + 待機処理を入れる
+		for i := 0; i < 10; i++ {
+			status, err := internal.CheckIPStatus(token, floatingip)
+			if err != nil {
+				log.Fatalln(err)
+			}
+			if status != internal.Active {
+				fmt.Println(status)
+				fmt.Println("リトライします")
+				time.Sleep(20 * time.Second)
+				continue
+			}
+			break
+		}
 
 		// ssh接続を行いシェルスクリプトの実行
 		ip := connectedInstance.Floatingip.FloatingIPAddress

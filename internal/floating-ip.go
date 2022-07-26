@@ -3,6 +3,7 @@ package internal
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -21,12 +22,12 @@ type networkID struct {
 	FloatingNetWorkID string `json:"floating_network_id"`
 }
 
-type status string
+// type status string
 
 const (
-	active status = "ACTIVE"
-	down   status = "DOWN"
-	err    status = "ERROR"
+	Active string = "ACTIVE"
+	Down   string = "DOWN"
+	Err    string = "ERROR"
 )
 
 type CreatingIPRes struct {
@@ -39,7 +40,7 @@ type FloatingIP struct {
 	FixedIPAddress    string `json:"fixed_ip_address"`
 	FloatingIPAddress string `json:"floating_ip_address"`
 	TenantID          string `json:"tenant_id"`
-	Status            status `json:"status"`
+	Status            string `json:"status"`
 	PortID            string `json:"port_id"`
 	ID                string `json:"id"`
 }
@@ -264,3 +265,57 @@ type FixedIps struct {
 }
 
 // type SecurityGroups struct{}
+
+// IPのステータスを確認する
+
+func CheckIPStatus(token *GetTokenRes, floatingIP *CreatingIPRes) (string, error) {
+	endpoint := networkBaseURL + "/v2.0/" + "floatingips/" + floatingIP.FloatingIP.ID
+	fmt.Println(endpoint)
+	req, err := http.NewRequest("GET", endpoint, nil)
+	if err != nil {
+		log.Fatalln(req)
+	}
+	req.Header.Set("X-Auth-Token", token.Access.Token.ID)
+
+	client := http.Client{}
+	res, err := client.Do(req)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	defer res.Body.Close()
+
+	data, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	var CheckIPStatus CheckIPStatusRes
+
+	err = json.Unmarshal(data, &CheckIPStatus)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	fmt.Println("---")
+	fmt.Println(res.StatusCode)
+	fmt.Println(CheckIPStatus)
+	fmt.Println(CheckIPStatus.Floatingip.Status)
+	fmt.Println("---")
+
+	return CheckIPStatus.Floatingip.Status, nil
+
+}
+
+type CheckIPStatusRes struct {
+	Floatingip struct {
+		FloatingNetworkID string      `json:"floating_network_id"`
+		RouterID          interface{} `json:"router_id"`
+		FixedIPAddress    interface{} `json:"fixed_ip_address"`
+		FloatingIPAddress string      `json:"floating_ip_address"`
+		TenantID          string      `json:"tenant_id"`
+		Status            string      `json:"status"`
+		PortID            interface{} `json:"port_id"`
+		ID                string      `json:"id"`
+	} `json:"floatingip"`
+}
