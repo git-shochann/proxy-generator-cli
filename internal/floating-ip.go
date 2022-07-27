@@ -297,12 +297,6 @@ func CheckIPStatus(token *GetTokenRes, floatingIP *CreatingIPRes) (string, error
 		log.Fatalln(err)
 	}
 
-	fmt.Println("---")
-	fmt.Println(res.StatusCode)
-	fmt.Println(CheckIPStatus)
-	fmt.Println(CheckIPStatus.Floatingip.Status)
-	fmt.Println("---")
-
 	return CheckIPStatus.Floatingip.Status, nil
 
 }

@@ -81,7 +81,7 @@ var createCmd = &cobra.Command{
 		fmt.Println("Done!")
 		fmt.Printf("%+v", connectedInstance)
 
-		// ここでStatusのチェック処理を入れる -> ACTIVEであれば処理を続ける 5回まで繰り返す + 待機処理を入れる
+		// ここでStatusのチェック処理を入れる -> ACTIVEであれば処理を続ける 10回まで繰り返す + 待機処理を入れる
 		for i := 0; i < 10; i++ {
 			status, err := internal.CheckIPStatus(token, floatingip)
 			if err != nil {
