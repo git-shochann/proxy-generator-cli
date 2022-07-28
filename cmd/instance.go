@@ -79,7 +79,7 @@ var createCmd = &cobra.Command{
 			log.Fatalln(err)
 		}
 		fmt.Println("Done!")
-		fmt.Printf("%+v", connectedInstance)
+		// fmt.Printf("%+v", connectedInstance)
 
 		// ここでStatusのチェック処理を入れる -> ACTIVEであれば処理を続ける 10回まで繰り返す + 待機処理を入れる
 		for i := 0; i < 10; i++ {
@@ -88,14 +88,17 @@ var createCmd = &cobra.Command{
 				log.Fatalln(err)
 			}
 			if status != internal.Active {
-				fmt.Println(status)
-				fmt.Println("リトライします")
+				fmt.Println("Checking Status...")
 				time.Sleep(20 * time.Second)
 				continue
 			}
+			fmt.Printf("%v\n", status)
 			break
 		}
 
+		// 10回までいった時の処理
+
+		// 上記でACTIVEが返ってきたら...
 		// ssh接続を行いシェルスクリプトの実行
 		ip := connectedInstance.Floatingip.FloatingIPAddress
 		port := "22"
@@ -106,7 +109,7 @@ var createCmd = &cobra.Command{
 			fmt.Println(err)
 		}
 
-		fmt.Println(session)
+		fmt.Printf("%+v", session)
 
 		return nil
 

@@ -3,7 +3,6 @@ package internal
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -270,7 +269,6 @@ type FixedIps struct {
 
 func CheckIPStatus(token *GetTokenRes, floatingIP *CreatingIPRes) (string, error) {
 	endpoint := networkBaseURL + "/v2.0/" + "floatingips/" + floatingIP.FloatingIP.ID
-	fmt.Println(endpoint)
 	req, err := http.NewRequest("GET", endpoint, nil)
 	if err != nil {
 		log.Fatalln(req)

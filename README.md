@@ -43,7 +43,7 @@ credentials:
   keyname: <ssh接続するためのキー名, NHN Cloud Consoleから取得する>
 ```
 
-2, ssh 接続を許可するために NHN Cloud のサイトにて 22 ポートを解放する必要があります。
+2, ssh 接続を許可するために NHN Cloud のサイトにて 使用する Default のセキュリティグループの 22 ポートを解放する必要があります。
 
 ## How To Use
 
