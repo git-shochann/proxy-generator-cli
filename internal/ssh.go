@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"net"
@@ -11,6 +12,12 @@ import (
 )
 
 func SSHwithPublicKeyAuthentication(ip, port, user string, privateKey []byte) (*ssh.Session, error) {
+
+	shellscript, err := os.Open("proxy.sh")
+	if err != nil {
+		log.Fatalln("Unable to read script: ", err)
+	}
+	defer shellscript.Close()
 
 	signer, err := ssh.ParsePrivateKey(privateKey)
 	if err != nil {
@@ -26,8 +33,8 @@ func SSHwithPublicKeyAuthentication(ip, port, user string, privateKey []byte) (*
 	}
 
 	// インスタンスに接続するまで時間がかかりそうなので、リトライ処理を入れる
-	fmt.Println("Wait 60 seconds...")
-	time.Sleep(60 * time.Second)
+	fmt.Println("Wait 80 seconds...")
+	time.Sleep(80 * time.Second)
 
 	// ssh接続の実行
 	connection, err := ssh.Dial("tcp", net.JoinHostPort(ip, port), config)
@@ -48,17 +55,15 @@ func SSHwithPublicKeyAuthentication(ip, port, user string, privateKey []byte) (*
 
 	defer session.Close()
 
-	// リモートサーバーのコマンド実行結果をローカルの標準出力と標準エラーへと渡す
-
-	session.Stdout = os.Stdout // 出力
-	session.Stderr = os.Stderr // エラー
-
-	// standard in(標準入力)
-	session.Run("/bin.sh")
-	session.Run("echo hello world")
-
+	var b bytes.Buffer
+	session.Stdout = &b
+	session.Stdin = shellscript
+	if err := session.Run("/usr/bin/sh"); err != nil {
+		log.Fatalf("Failed to run:%v", err)
+	}
 	fmt.Println("---")
-	fmt.Println(session.Stdout)
+	fmt.Println(b.String())
+	fmt.Println(session.Stderr)
 	fmt.Println("---")
 
 	// 実際の値を返す 型ではない。
