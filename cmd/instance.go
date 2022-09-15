@@ -96,7 +96,7 @@ var createCmd = &cobra.Command{
 			break
 		}
 
-		// 10回までいった時の処理
+		// 10回までいった時の処理 ↓
 
 		// 上記でACTIVEが返ってきたら...
 		// ssh接続を行いシェルスクリプトの実行

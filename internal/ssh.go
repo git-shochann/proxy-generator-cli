@@ -15,13 +15,13 @@ func SSHwithPublicKeyAuthentication(ip, port, user string, privateKey []byte) (*
 
 	shellscript, err := os.Open("proxy.sh")
 	if err != nil {
-		log.Fatalln("Unable to read script: ", err)
+		log.Println("Unable to read script: ", err)
 	}
 	defer shellscript.Close()
 
 	signer, err := ssh.ParsePrivateKey(privateKey)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 
 	config := &ssh.ClientConfig{
@@ -39,18 +39,17 @@ func SSHwithPublicKeyAuthentication(ip, port, user string, privateKey []byte) (*
 	// ssh接続の実行
 	connection, err := ssh.Dial("tcp", net.JoinHostPort(ip, port), config)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 
 	defer connection.Close()
 
 	fmt.Println("done!")
-	fmt.Println(connection)
 
 	// セッションを開く
 	session, err := connection.NewSession()
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
 
 	defer session.Close()
@@ -59,12 +58,13 @@ func SSHwithPublicKeyAuthentication(ip, port, user string, privateKey []byte) (*
 	session.Stdout = &b
 	session.Stdin = shellscript
 	if err := session.Run("/usr/bin/sh"); err != nil {
-		log.Fatalf("Failed to run:%v", err)
+		fmt.Printf("Failed to run:%v", err)
 	}
-	fmt.Println("---")
-	fmt.Println(b.String())
-	fmt.Println(session.Stderr)
-	fmt.Println("---")
+
+	fmt.Printf("session.Stdout: %v\n", session.Stdout)
+	fmt.Printf("session.Stdin: %v\n", session.Stdin)
+	fmt.Printf("err: %v\n", err)
+	fmt.Printf("session.Stderr: %v\n", session.Stderr)
 
 	// 実際の値を返す 型ではない。
 	return session, nil
