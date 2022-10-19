@@ -2,8 +2,8 @@
 
 ## Feature
 
-NHNCloud にて自動でインスタンスの作成、全件取得、指定したインスタンスを開始、停止
-またグローバル IP のアタッチ、デタッチを行います。
+NHNCloud にて自動でインスタンスの作成、全件取得、指定したインスタンスを開始、停止などを行うことが可能。
+またインスタンスに関してはグローバル IP のアタッチ、デタッチを自動で行います。
 グローバル IP がアタッチされているサーバーに関しては、SSH 接続の上、Squid を用いて Proxy サーバーの自動生成を行います。
 
 ## Configuration
@@ -50,5 +50,5 @@ credentials:
 1, 起動後.pem(秘密鍵をドラッグ&ドロップでスタート) // 適切な場所に置かないと権限エラーになる 場所を指定した方がいいかもしれない
 
 ```Shell
-  nhn-toast-api create [your nhn cloud private key]
+  proxy-generator-cli create [your nhn cloud private key]
 ```
